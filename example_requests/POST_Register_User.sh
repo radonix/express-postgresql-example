@@ -1,1 +1,1 @@
-curl --request POST --url 'https://express-backend-example-jet.vercel.app/users/register' --header 'Content-Type: application/json'  --data '{ "username": "newuser5", "password": "securepassword123"}'
+curl --request POST --url 'http://localhost:3000/users/register' --header 'Content-Type: application/json'  --data '{ "name": "newuser5","email": "newuser5@gmail.com","password": "securepassword@123"}'

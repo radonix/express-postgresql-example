@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import User from "../models/User.js"
+import db from "../models/index.js"
+
+
 
 const register = async (req, res) => {
     console.log("Registering User", req.body);
@@ -30,7 +32,7 @@ const register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const savedUser = await User.create({
+        const savedUser = await db.users.create({
             name,
             email,
             password: hashedPassword
@@ -74,21 +76,21 @@ const login = async (req, res) => {
    }
 
     try {
-        const user = await User.findOne({ email }).select('+password');
+        const user = await db.users.findOne({ email }).select('+password');
         if (!user) {
             return res.status(400).json({ message: "User not found" });
         }
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await bcrypt.compare(password, db.users.password);
         console.log("Password match:", isMatch);
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid credentials" });
         }
-        console.log("User logged in successfully:", user.email);
+        console.log("User logged in successfully:", db.users.email);
         if (!process.env.JWT_SECRET) {
             console.error("JWT_SECRET is not defined in environment variables");
             return res.status(500).json({ message: "Internal server error: Missing JWT_SECRET" });
         }
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: db.users._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         return res.status(200).json({ message: "Login successful", token });
     } catch (error) {
         console.error("Error logging in user:", error);

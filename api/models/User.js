@@ -1,22 +1,19 @@
-import mongoose from "mongoose";
-
-const UserSchema = new mongoose.Schema({
+export default (sequelize, Sequelize) =>{
+    const User = sequelize.define("user",{
     name:{
-        type: String,
-        required:true,
+        type: Sequelize.STRING,
+        allowNull: false,
     },
     email:{
-        type: String,
-        required:true,
+        type: Sequelize.STRING,
+        allowNull: false,
+        primaryKey:true,
         unique: true,
     },
     password: {
-        type: String,
-        required: true,
-        select: false,
-    }
-});
-
-const User = mongoose.model("User",UserSchema);
-
-export default User;
+        type: Sequelize.STRING,
+        allowNull: false,
+    } 
+  });
+ return User;
+}
